@@ -8,56 +8,103 @@
 
 //It is highly recommended you use functions to section out your logic
 
-let validInputs = ["1","2","3","4","5","6","7","8","9","0","+","-","*","/","="]
-let operatorsPlus = ["+","-","*","/","="]
-let operators = ["+","-","*","/"]
-let integers = ["1","2","3","4","5","6","7","8","9","0"]
+let validInputs = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "0", "+", "-", "*", "/", "="]
+let operatorsPlus = ["+", "-", "*", "/", "="]
+let operators = ["+", "-", "*", "/"]
+let integers = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "0"]
 
 let firstNum = null
 let secondNum = null
 let operator = ""
 
 let current = [];
+let result;
 
-document.onkeypress = event=>{
+function reset(){
+    firstNum = null
+    secondNum = null
+    operator = ""
+    current = [];
+}
+
+function resetScreen(){
+    document.getElementById("first").innerText = "First Number"
+    document.getElementById("second").innerText = "Second Number"
+    document.getElementById("operator").innerText = "Operator"
+    document.getElementById("result").innerText = "Result"
+}
+
+document.onkeypress = event => {
     let input = event.key;
-    if(!validInputs.includes(input)){
-        document.getElementById("first").innerText = "Please enter a valid number or operator"
+    console.log(input)
+    if (!validInputs.includes(input)) {
+        document.getElementById("warn").innerText = "Please enter a valid number or operator"
     }
-    else if(input === "="){
-        if(!firstNum && !current){
-            document.getElementById("first").innerText = "Please enter a valid number"
+    else if (input === "=") {
+        console.log(current)
+        console.log(firstNum)
+        if (!firstNum && current.length === 0) {
+            document.getElementById("warn").innerText = "Please enter a valid number"
         }
-        else if(firstNum && !current){
-            document.getElementById("second").innerText = "Please enter a valid number"
+        else if (firstNum && current.length === 0) {
+            console.log("second test")
+            document.getElementById("warn").innerText = "Please enter a valid number"
         }
-        else if(!firstNum && current){
-            document.getElementById("operator").innerText = "Please enter a valid number or operator"
+        else if (!firstNum && current.length > 0) {
+            document.getElementById("warn").innerText = "Please enter a valid number or operator"
         }
-        // else if(firstNum && operator && !current){
-
-        // }
+        else if(firstNum && operator && current.length > 0){
+            document.getElementById("warn").innerText = ""
+            secondNum = parseInt(current.join(""));
+            if(operator === "+"){
+                result = firstNum + secondNum
+                document.getElementById("result").innerText = result
+                reset()
+            }
+            else if(operator === "-"){
+                result = firstNum - secondNum
+                document.getElementById("result").innerText = result
+                reset()
+            }
+            else if(operator === "*"){
+                result = firstNum * secondNum
+                document.getElementById("result").innerText = result
+                reset()
+            }
+            else if(operator === "/"){
+                result = firstNum / secondNum
+                document.getElementById("result").innerText = result
+                reset()
+            }
+        }
     }
-    else if(!firstNum && integers.includes(input)){
-            current.push(input)
-            document.getElementById("first").innerText = current.join("")
-    }
-    else if(operators.includes(input)){
-        if(!firstNum && !current){
-            document.getElementById("first").innerText = "Please enter a valid number"
+    else if (!firstNum && integers.includes(input)) {
+        if(result){
+            result = null
+            resetScreen();
         }
-        else if(!firstNum && current){
+        document.getElementById("warn").innerText = ""
+        current.push(input)
+        document.getElementById("first").innerText = current.join("")
+    }
+    else if (operators.includes(input)) {
+        if (!firstNum && current.length === 0) {
+            document.getElementById("warn").innerText = "Please enter a valid number"
+        }
+        else if (!firstNum && current.length > 0) {
+            document.getElementById("warn").innerText = ""
             firstNum = parseInt(current.join(""));
             current = [];
             operator = input
             document.getElementById("operator").innerText = operator
         }
+        else if (firstNum){
+            document.getElementById("warn").innerText = "Please enter a valid input"
+        }
     }
-    // else if(!firstNum && !integers.includes(input)){
-    //     if(operatorsPlus.includes(input)){
-    //         document.getElementById("first").innerText = "Please enter a number first"
-    //     }
-    // }
-
-
+    else if (firstNum && integers.includes(input)) {
+        document.getElementById("warn").innerText = ""
+        current.push(input)
+        document.getElementById("second").innerText = current.join("")
+    }
 }
